@@ -1,6 +1,6 @@
 # Identidog - A Dog Breed Identification App
 
-This is the main repository for my dog identification app - Identidog.
+This is the main repository for my app Identidog.
 
 ![app_screenshot](walkthrough_imgs/app_screenshot.jpg)
 
