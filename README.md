@@ -24,13 +24,13 @@ The app essentially strings together three image classifiers:
 - A classifier which detects whether a dog is in the image
 - A classifier which identifies dog breeds from among 133 of some of the most well-known categories.
 
-For the first two classifiers we load pretrained models: a front-facing haarcascades model from OpenCV for face detection and the VGG-16 Convolutional Neural Network (CNN) from PythonTorch Hub, pretrained on the Imagenet database.
+For the first two classifiers we load pretrained models: a front-facing haarcascades model from [OpenCV](https://github.com/opencv/opencv[) for face detection and the VGG-16 Convolutional Neural Network (CNN) from [PyTorch Hub](https://pytorch.org/hub/), pretrained on the [Imagenet](https://www.image-net.org/) database.
 
 The breed identifier was created by fine-tuning a pretrained CNN ResNet (also trained on Imagenet) to our specific dataset of 133 dog breeds using the fastai library.
 
 ### Acknowlegements
 - This project was based on this [repo](https://github.com/udacity/deep-learning-v2-pytorch/tree/master/project-dog-classification) from Udacity. In particular, the training data and template for the walkthrough were obtained there.
-- Fastai's deep learning [course]() and [book]() were invaluable resources in learning how to train and deploy a CNN classifier using transfer learning.
-- This app is dedicated to the Cosmo, Loki and Monty.
+- Fastai's deep learning course and [book](https://github.com/fastai/fastbook) were invaluable resources in learning how to train and deploy a CNN classifier using transfer learning.
+- This app is dedicated to Cosmo, Loki and Monty.
 
 **Author**: Alexei Kudryashov
