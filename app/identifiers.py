@@ -9,7 +9,6 @@ given any path to an input image.
 """
 # imports
 import pathlib
-from contextlib import contextmanager
 
 import cv2
 import torch
@@ -119,25 +118,18 @@ def get_breed_name(filepath: pathlib.Path) -> str:
 # Defining function to deal with swapping posix to windows
 # paths when on windows machine. Credit goes to to Jean Francois T.'s
 # answer on Stackoverflow (https://stackoverflow.com/a/68796747)
-@contextmanager
-def set_path_windows():
-    """
-    Function switches from posixpath to windows path if necessary
-    and returns back to posixpath.
-    """
-    posix_backup = pathlib.PosixPath
-    try:
-        pathlib.PosixPath = pathlib.WindowsPath
-        yield
-    finally:
-        pathlib.PosixPath = posix_backup
 
+# path to breed_model pickle file
+MODEL_PATH = pathlib.Path("models/breed_model.pkl")
 
-EXPORT_PATH = pathlib.Path("models/breed_model.pkl")
-
-
-with set_path_windows():
-    breeds_inf = load_learner(EXPORT_PATH, cpu=True)
+# load model - convert posix to windows path for compatibility
+# on windows
+path_temp = pathlib.PosixPath
+try:
+    pathlib.PosixPath = pathlib.WindowsPath
+    breeds_inf = load_learner(MODEL_PATH, cpu=True)
+finally:
+    pathlib.PosixPath = path_temp
 
 
 # convert category names to more readable format for output in identification
