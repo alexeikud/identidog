@@ -10,6 +10,7 @@ given any path to an input image.
 # imports
 import pathlib
 from contextlib import contextmanager
+
 import cv2
 import torch
 import torchvision.models as models
