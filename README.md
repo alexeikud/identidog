@@ -14,12 +14,13 @@ The repo is organised as follows:
 - The folder "app" contains all python scripts, images and models needed to run the actual app. In particular, the main script is contained in ``app.py``.
 
 ## How Identidog came to be
- Identidog was developed as a fun machine learning project for identification of the mixed breed dogs in my home. Although dog identification apps have already been available since [2016](https://news.microsoft.com/features/fetch-new-microsoft-garage-app-uses-artificial-intelligence-to-name-that-breed/), I found most give unsatisfactory results for mixed breeds - and figured I would obtain a better understanding of the methods and limitations by making my own app.
+ Identidog was developed as a fun machine learning project for trying out identification of the mixed-breed dogs living in my home. Although dog identification apps have already been available since [2016](https://news.microsoft.com/features/fetch-new-microsoft-garage-app-uses-artificial-intelligence-to-name-that-breed/), I found most give unsatisfactory results for mixed breeds - and figured I would obtain a better understanding of the methods and limitations by making my own app.
 
- In addition, the project was meant to help cement techniques I was learning from fastai's deep-learning [course](https://course.fast.ai/).
+In addition, the project was meant to help cement techniques I learned from fastai's deep-learning [course](https://course.fast.ai/).
 
 ## How Identidog works
 The app essentially strings together three image classifiers:
+
 - A classifier which detects human faces in image
 - A classifier which detects whether a dog is in the image
 - A classifier which identifies dog breeds from among 133 of some of the most well-known categories.
