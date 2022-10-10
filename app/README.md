@@ -1,5 +1,5 @@
 ---
-title: Dog Breed Identifier
+title: Identidog
 emoji: 🐶
 colorFrom: green
 colorTo: blue
