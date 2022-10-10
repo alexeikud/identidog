@@ -4,7 +4,7 @@ This is the main repository for my dog identification app - Identidog.
 
 ![app_screenshot](walkthrough_imgs/app_screenshot.jpg)
 
-As the screenshot shows, the app takes an input image showing a dog or a person and returns the top resembling breeds. One may try out and use the app in any web browser by visiting this [page]() served by the AI/ML platform [Hugging face spaces](www.huggingface.co).
+As the screenshot shows, the app takes an input image showing a dog or a person and returns the top resembling breeds 🐶. One may try out and use the app in any web browser by visiting this [page]() served by the AI/ML platform [Hugging face spaces](www.huggingface.co).
 
 ## Repo Layout
 The repo is organised as follows:
