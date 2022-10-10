@@ -1,12 +1,12 @@
 """
 Main script for gradio app identidog.
-We define the app's execution function in the function "run_app",
-then define app atrributes before building app with gradio.
-See the gradio docs (https://www.gradio.app/docs/) for more info.
+We define the app's execution in the function "run_app",
+then define app atrributes before building app with the gradio
+library (see https://www.gradio.app/docs/).
 
 Notes:
-- Script is dependent on pre-defined functions and models from "identiers.py"
-- Example images are loaded from the folder "image_examples"
+- Script is dependent on pre-defined functions and models from "identifiers.py"
+- Example images are loaded from the folder "img_examples"
 """
 
 # ## Import necessary libraries
@@ -73,7 +73,7 @@ Upload an image of a dog or human, or try an example from below. \
 The app returns the top 3 dog breeds they resemble and the corresponding \
 confidences!
 
-**Note**: Cropped and zoomed-in images showing only a dog or human \
+**Note**: Cropped or zoomed-in images showing only a dog or human \
 yield better predictions.
 """
 

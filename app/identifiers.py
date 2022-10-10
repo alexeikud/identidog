@@ -1,21 +1,16 @@
 """
-This script defines the face and dog detector as functions.
+This script defines all the identification functions the app relies on.
 We use a full frontal Haarcascade model from opencv for face detection
 and a pretrained VGG16 CNN from pytorch for dog detection.
 
 We also import our pretrained CNN model and use it
 to define an inference function for dog breed identification
 given any path to an input image.
-
-Note, before loading we write a function to allow compatibility of reading path
-filenames when running on windows machine. We give credit to Jean Francois T.
-for his answer on Stackoverflow: https://stackoverflow.com/a/68796747
 """
-
+# imports
 import pathlib
 from contextlib import contextmanager
 
-# imports
 import cv2
 import torch
 import torchvision.models as models
@@ -105,25 +100,7 @@ def dog_detector(img_path: str) -> bool:
 
 # Loading CNN Model for dog breed classification
 
-# Enabling context manager to deal with swapping posix to windows
-# paths depending on os
-@contextmanager
-def set_path_windows():
-    """
-    Function switches from posixpath to windows path if necessary.
-    """
-    posix_backup = pathlib.PosixPath
-    try:
-        pathlib.PosixPath = pathlib.WindowsPath
-        yield
-    finally:
-        pathlib.PosixPath = posix_backup
-
-
-EXPORT_PATH = pathlib.Path("models/breed_model.pkl")
-
-
-# custom name function must be preloaded when using load_lerner
+# Custom label function must be preloaded when using load_lerner
 def get_breed_name(filepath: pathlib.Path) -> str:
     """
     Function to grab dog breed name from full pathname.
@@ -137,6 +114,26 @@ def get_breed_name(filepath: pathlib.Path) -> str:
         breed name as string.
     """
     return filepath.name[:-10].replace("_", " ")
+
+
+# Defining function to deal with swapping posix to windows
+# paths when on windows machine. Credit goes to to Jean Francois T.'s
+# answer on Stackoverflow (https://stackoverflow.com/a/68796747)
+@contextmanager
+def set_path_windows():
+    """
+    Function switches from posixpath to windows path if necessary
+    and returns back to posixpath.
+    """
+    posix_backup = pathlib.PosixPath
+    try:
+        pathlib.PosixPath = pathlib.WindowsPath
+        yield
+    finally:
+        pathlib.PosixPath = posix_backup
+
+
+EXPORT_PATH = pathlib.Path("models/breed_model.pkl")
 
 
 with set_path_windows():
