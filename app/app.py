@@ -16,7 +16,7 @@ import identifiers as ids
 # ## Defining app logic
 
 
-def run_app(img_path: str) -> tuple[str, dict]:
+def run_app(img_path: str) -> tuple[str, dict or None]:
     """
     App predicts most resembling dog breeds from image of human or dog.
     Logic handles cases for a human, dog, both or neither.
@@ -69,12 +69,12 @@ title = "Identidog"
 
 # app main description
 description = """
-Upload an image of a dog or human, or try an example from below. \
+Try an example from below, or upload your own image of a dog or a person. \
 The app returns the top 3 dog breeds they resemble and the corresponding \
 confidences!
 
-**Note**: Cropped or zoomed-in images showing only a dog or human \
-yield better predictions.
+**Hint**: Cropped/zoomed-in images showing only a dog or person \
+yield the best results!
 """
 
 # app extra info
@@ -102,10 +102,10 @@ outputs = [
 examples = [
     "img_examples/cosmo_smart.png",
     "img_examples/Nessy.jpg",
-    "img_examples/sleepy_dog.jpg",
-    "img_examples/romanian.jpg",
     "img_examples/lokii.jpg",
     "img_examples/monty.jpg",
+    "img_examples/romanian.JPG",
+    "img_examples/sleepy_dog.JPG",
 ]
 
 
