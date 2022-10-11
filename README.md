@@ -12,7 +12,7 @@ The repo is organised as follows:
 - The folder "app" contains all python scripts, images and models needed to run the actual app. In particular, the main script is contained in ``app.py``.
 
 ## How Identidog came to be
- Identidog was developed as a fun machine learning project for trying out identification of the mixed-breed dogs living in my home. Although dog identification apps have already been available since [2016](https://news.microsoft.com/features/fetch-new-microsoft-garage-app-uses-artificial-intelligence-to-name-that-breed/), I found most give unsatisfactory results for mixed breeds - and figured I would obtain a better understanding of the methods and limitations by making my own app.
+Identidog was developed as a fun machine learning project for trying out identification of the mixed-breed dogs living in my home. Although dog identification apps have already been available since [2016](https://news.microsoft.com/features/fetch-new-microsoft-garage-app-uses-artificial-intelligence-to-name-that-breed/), I found most give unsatisfactory results for mixed breeds - and figured I would obtain a better understanding of the methods and limitations by making my own app.
 
 In addition, the project was meant to help cement techniques I learned from fastai's deep-learning [course](https://course.fast.ai/).
 
@@ -25,11 +25,11 @@ The app essentially strings together three image classifiers:
 
 For the first two classifiers we load pretrained models: a front-facing haarcascades model from [OpenCV](https://github.com/opencv/opencv[) for face detection and the VGG-16 Convolutional Neural Network (CNN) from [PyTorch Hub](https://pytorch.org/hub/), pretrained on the [Imagenet](https://www.image-net.org/) database.
 
-The breed identifier was created by fine-tuning a pretrained CNN ResNet (also trained on Imagenet) to our specific dataset of 133 dog breeds using the fastai library.
+The breed identifier was created by fine-tuning a pretrained CNN ResNet (also trained on Imagenet) to our specific dataset of 133 dog breeds using the fastai's deep-learning library.
 
-### Acknowlegements
+## Acknowlegements
 - This project was based on this [repo](https://github.com/udacity/deep-learning-v2-pytorch/tree/master/project-dog-classification) from Udacity. In particular, the training data and template for the walkthrough were obtained there.
-- Fastai's deep learning course and [book](https://github.com/fastai/fastbook) were invaluable resources in learning how to train and deploy a CNN classifier using transfer learning.
-- This app is dedicated to Cosmo, Loki and Monty.
+- Fastai's deep-learning course and [book](https://github.com/fastai/fastbook) were invaluable resources in learning how to train and deploy a CNN classifier using transfer learning.
+- The app is dedicated to Cosmo, Loki and Monty.
 
 **Author**: Alexei Kudryashov
