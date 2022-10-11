@@ -8,6 +8,7 @@ to define an inference function for dog breed identification
 given any path to an input image.
 """
 # imports
+import os
 import pathlib
 
 import cv2
@@ -99,7 +100,7 @@ def dog_detector(img_path: str) -> bool:
 
 # Loading CNN Model for dog breed classification
 
-# Custom label function must be preloaded when using load_lerner
+# Custom label function must be preloaded when using load_learner
 def get_breed_name(filepath: pathlib.Path) -> str:
     """
     Function to grab dog breed name from full pathname.
@@ -115,21 +116,20 @@ def get_breed_name(filepath: pathlib.Path) -> str:
     return filepath.name[:-10].replace("_", " ")
 
 
-# Defining function to deal with swapping posix to windows
-# paths when on windows machine. Credit goes to to Jean Francois T.'s
-# answer on Stackoverflow (https://stackoverflow.com/a/68796747)
-
-# path to breed_model pickle file
+# path to breed identification model pickle file
 MODEL_PATH = pathlib.Path("models/breed_model.pkl")
 
-# load model - convert posix to windows path for compatibility
-# on windows
-path_temp = pathlib.PosixPath
-try:
-    pathlib.PosixPath = pathlib.WindowsPath
+# load model - transfer posix to windows path if on windows machine
+# Compare this thread on Stackoverflow (https://stackoverflow.com/a/68796747)
+if os.name == "nt":
+    path_temp = pathlib.PosixPath
+    try:
+        pathlib.PosixPath = pathlib.WindowsPath
+        breeds_inf = load_learner(MODEL_PATH, cpu=True)
+    finally:
+        pathlib.PosixPath = path_temp
+else:
     breeds_inf = load_learner(MODEL_PATH, cpu=True)
-finally:
-    pathlib.PosixPath = path_temp
 
 
 # convert category names to more readable format for output in identification
