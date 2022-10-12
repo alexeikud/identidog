@@ -1,21 +1,164 @@
 """
 Main script for gradio app identidog.
-We define the app's execution in the function "run_app",
-then define app atrributes before building app with the gradio
-library (see https://www.gradio.app/docs/).
 
-Notes:
-- Script is dependent on pre-defined functions and models from "identifiers.py"
-- Example images are loaded from the folder "img_examples"
+The app's main function is defined in the function "run_app"
+and relies on three identification functions defined beforehand:
+"face_detector", dog_detector" and "breed_identifier".
+
+We use a full frontal Haarcascade model from opencv for face detection
+and a pretrained VGG16 CNN from pytorch for dog detection. For breed
+identification we load a pretrained ResNet model fine-tuned to 133 dog-breed
+categories with fastai (see the app's walkthrough notebook on github
+(https://www.github.com/alexeikud/identidog) for the code used in training.)
+
+The final part of the script uses the gradio library
+(see https://www.gradio.app/docs/) to launch an iteractive app.
+
+Note: Example images are loaded from the folder "img_examples"
 """
 
-# ## Import necessary libraries
+# ## Import used libraries
+import os
+import pathlib
+
+import cv2
 import gradio as gr
-import identifiers as ids
+import torch
+import torchvision.models as models
+import torchvision.transforms as transforms
+from fastai.vision.all import PILImage, load_learner
+from PIL import Image, ImageFile
 
-# ## Defining app logic
+# Set PIL to be tolerant of image files that are truncated.
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
+# Define function for face detection
+def face_detector(img_path: str) -> bool:
+    """
+    Using opencv's haar cascade classifier to detect human faces in images
+
+    Inputs:
+        img_path: path to an image of type string or path object
+
+    Outputs:
+        True or False depending on whether at least one face detected or not.
+    """
+    img = cv2.imread(img_path, 0)  # 0 flag for greyscale
+    fd_model = cv2.CascadeClassifier("models/haarcascade_frontalface_alt.xml")
+    faces = fd_model.detectMultiScale(img)
+    return len(faces) > 0
+
+
+# load VGG16 model for dog detection
+dd_model = models.vgg16(pretrained=True)
+
+
+# ## Define inference model for dog detection
+def dd_predict(img_path: str) -> int:
+    """
+    Use pre-trained VGG-16 model to obtain index corresponding to
+    predicted ImageNet class for image at specified path
+
+    Inputs:
+        img_path: path to an image
+
+    Outputs:
+        Integer index corresponding to VGG-16 model's prediction
+    """
+    # Load and pre-process an image from the given img_path
+    img = Image.open(img_path)
+    preprocess = transforms.Compose(
+        [
+            transforms.Resize((256, 256)),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+        ]
+    )
+    img_t = preprocess(img)
+    # create a mini-batch
+    batch_t = torch.unsqueeze(img_t, 0)
+    # initialise model
+    dd_model.eval()
+    # Use the model and print the predicted category
+    probs = dd_model(batch_t).squeeze(0).softmax(0)
+    class_id = probs.argmax().item()
+    return class_id  # predicted class index
+
+
+# Set dog category indices from Imagenet1000 classes
+DOG_INDICES = range(151, 269)
+
+
+# Define dog detection function
+def dog_detector(img_path: str) -> bool:
+    """
+    Function returns "True" if a dog is detected in the image.
+
+    Inputs:
+        img_path: path to image as str/path.
+    Outputs:
+        Boolean True/False if dog detected or not.
+    """
+    image_index = dd_predict(img_path)
+    return image_index in DOG_INDICES
+
+
+# Store path to breed identification model pickle file
+MODEL_PATH = pathlib.Path("models/breed_model.pkl")
+
+
+# Define custom label function saved in fastai learner before loading model
+def get_breed_name(filepath: pathlib.Path) -> str:
+    """
+    Function to grab dog breed name from full pathname.
+    The name can be obtained by dropping the last 10
+    characters from filename and converting underscores
+    to spaces.
+    Input:
+        filepath as Path object.
+    Output:
+        breed name as string.
+    """
+    return filepath.name[:-10].replace("_", " ")
+
+
+# Load model - we transfer posix to windows path if on windows machine
+# (c.f. this thread on Stackoverflow: https://stackoverflow.com/a/68796747)
+if os.name == "nt":
+    path_temp = pathlib.PosixPath
+    try:
+        pathlib.PosixPath = pathlib.WindowsPath
+        breeds_inf = load_learner(MODEL_PATH, cpu=True)
+    finally:
+        pathlib.PosixPath = path_temp
+else:
+    breeds_inf = load_learner(MODEL_PATH, cpu=True)
+
+# Load breed label names into tuple
+breeds = tuple(breed for breed in breeds_inf.dls.vocab)
+
+
+# Define inference model for breed identification
+def breed_identifier(img_path: str) -> dict:
+    """
+    Function to identify dog breed from a possible of 133 categories in the
+    udacity dog dataset. It takes an image path, and returns breed and
+    probabilities for all breeds. We use a preloaded fastai vision learner
+    as a model.
+    Input:
+        img_path (file path) to image
+    Output:
+        dictionary whose keys are the identifications categories
+        and values are the corresponding probabilities.
+    """
+    img = PILImage.create(img_path)
+    _, _, probs = breeds_inf.predict(img)
+    return {breeds[i]: float(probs[i]) for i in range(len(breeds))}
+
+
+# Defining app main function
 def run_app(img_path: str) -> tuple[str, dict or None]:
     """
     App predicts most resembling dog breeds from image of human or dog.
@@ -28,46 +171,43 @@ def run_app(img_path: str) -> tuple[str, dict or None]:
         preds:      Dictionary of prediction confidences with items
                       (breed labels: probabilities).
     """
-    # detect humans/ dogs
-    face_detected = ids.face_detector(img_path)
-    dog_detected = ids.dog_detector(img_path)
+    # Store boolean values of whether human/dog detected
+    face_detected = face_detector(img_path)
+    dog_detected = dog_detector(img_path)
 
-    # app logic:
-    # if both human and dog detected
-    # output error message
+    # If both human and dog detected, then output error message
     if face_detected and dog_detected:
         detection = (
             "Both human and dog found! Please crop the image "
             "until only a person or dog are showing to obtain a prediction"
         )
         return detection, None
-    # if neither human or dog detected:
-    # output error message
+    # If neither human or dog detected, then output error message
     elif not face_detected and not dog_detected:
         detection = (
             "No human or dog found! Please zoom in by cropping "
             "or upload a new image."
         )
         return detection, None
-    # if only a human OR a dog detected:
-    # run breed identifier and output relevant message.
+    # If only a human or a dog detected:
+    # Run breed identifier and output relevant message and identification.
     else:
-        preds = ids.breed_identifier(img_path)
         detection = (
             "Human detected! Your identification results are:"
             if face_detected
             else "Dog detected! The most resembling breeds are:"
         )
+        preds = breed_identifier(img_path)
         return detection, preds
 
 
-# ## Creating GUI with Gradio
+# ## Building app with Gradio
 
 # ### Defining Inputs
 # app title
 title = "Identidog"
 
-# app main description
+# App main description
 description = """
 Try an example from below, or upload your own image of a dog or a person. \
 The app returns the top 3 dog breeds they resemble and the corresponding \
@@ -77,10 +217,10 @@ confidences!
 yield the best results!
 """
 
-# app extra info
+# App extra info
 article = """
 
-___
+ ___
 
 <p style="text-align: center;">
 </li>
@@ -102,14 +242,14 @@ outputs = [
 examples = [
     "img_examples/cosmo_smart.png",
     "img_examples/Nessy.jpg",
-    "img_examples/lokii.jpg",
+    "img_examples/loki.jpg",
     "img_examples/monty.jpg",
     "img_examples/romanian.JPG",
     "img_examples/sleepy_dog.JPG",
 ]
 
 
-# ### Launching app
+# Defining gradio app
 app = gr.Interface(
     fn=run_app,
     inputs=inputs,
@@ -120,4 +260,7 @@ app = gr.Interface(
     examples=examples,
     allow_flagging="never",
 )
-app.launch()
+
+# Launch if script is run directly
+if __name__ == "__main__":
+    app.launch()
