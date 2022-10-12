@@ -9,7 +9,7 @@ The repo is organised as follows:
 
 - The root folder contains the README.md, (MIT) Licence information, the configuration files: ``requirements.txt`` and ``environment.yml``, a project notebook ``walkthrough.ipynb`` containing a detailed walkthrough of the development of the app, and the folder "walkthrough_imgs" containing its respective images.
 
-- The folder "app" contains all python scripts, images and models needed to run the actual app. In particular, the main script is contained in ``app.py``.
+- The folder "app" contains the main app script ``app.py``,the required images and models and a copy of the Huggingface Readme.
 
 ## How Identidog came to be
 Identidog was developed as a fun machine learning project for trying out identification of the mixed-breed dogs living in my home. Although dog identification apps have already been available since [2016](https://news.microsoft.com/features/fetch-new-microsoft-garage-app-uses-artificial-intelligence-to-name-that-breed/), I found most give unsatisfactory results for mixed breeds - and figured I would obtain a better understanding of the methods and limitations by making my own app.
