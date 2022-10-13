@@ -136,8 +136,8 @@ if os.name == "nt":
 else:
     breeds_inf = load_learner(MODEL_PATH, cpu=True)
 
-# Load breed label names into tuple
-breeds = tuple(breed for breed in breeds_inf.dls.vocab)
+# Load breed labels
+breeds = breeds_inf.dls.vocab
 
 
 # Define inference model for breed identification
@@ -239,14 +239,8 @@ outputs = [
 ]
 
 # input image examples
-examples = [
-    "img_examples/cosmo_smart.png",
-    "img_examples/Nessy.jpg",
-    "img_examples/loki.jpg",
-    "img_examples/monty.jpg",
-    "img_examples/romanian.JPG",
-    "img_examples/sleepy_dog.JPG",
-]
+EXAMPLES_FOLDER = pathlib.Path("img_examples")
+examples = [str(img_file) for img_file in EXAMPLES_FOLDER.iterdir()]
 
 
 # Defining gradio app
