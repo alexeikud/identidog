@@ -1,3 +1,2 @@
 fastai
 opencv-python
-pillow
