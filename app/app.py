@@ -24,13 +24,8 @@ import pathlib
 import cv2
 import gradio as gr
 import torch
-import torchvision.models as models
-import torchvision.transforms as transforms
 from fastai.vision.all import PILImage, load_learner
-from PIL import Image, ImageFile
-
-# Set PIL to be tolerant of image files that are truncated.
-ImageFile.LOAD_TRUNCATED_IMAGES = True
+from torchvision import models, transforms
 
 
 # Define function for face detection
@@ -67,7 +62,7 @@ def dd_predict(img_path: str) -> int:
         Integer index corresponding to VGG-16 model's prediction
     """
     # Load and pre-process an image from the given img_path
-    img = Image.open(img_path)
+    img = PILImage.create(img_path)
     preprocess = transforms.Compose(
         [
             transforms.Resize((256, 256)),
