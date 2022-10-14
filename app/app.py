@@ -136,7 +136,7 @@ breeds = breeds_inf.dls.vocab
 
 
 # Define inference model for breed identification
-def breed_identifier(img_path: str) -> dict:
+def breed_identifier(img_path: str) -> dict[str, float]:
     """
     Function to identify dog breed from a possible of 133 categories in the
     udacity dog dataset. It takes an image path, and returns breed and
@@ -154,7 +154,7 @@ def breed_identifier(img_path: str) -> dict:
 
 
 # Defining app main function
-def run_app(img_path: str) -> tuple[str, dict or None]:
+def run_app(img_path: str) -> tuple[str, dict[str, float] or None]:
     """
     App predicts most resembling dog breeds from image of human or dog.
     Logic handles cases for a human, dog, both or neither.
