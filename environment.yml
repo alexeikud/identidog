@@ -20,4 +20,4 @@ dependencies:
   - torchvision=0.11.3
   - pip:
     - gradio==3.4
-    - opencv-contrib-python
+    - opencv-python-headless
